@@ -1,0 +1,26 @@
+.dashboard-container {
+  padding: 20px;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.dashboard-description {
+  margin-bottom: 2rem;
+}
+
+.logout-button {
+  background-color: transparent;
+  border: 1px solid #333;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #333;
+  margin-top: 2rem;
+
+  &:hover {
+    background-color: #333;
+    color: white;
+  }
+}

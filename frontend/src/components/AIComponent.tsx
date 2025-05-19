@@ -62,12 +62,14 @@ const AIComponent = () => {
     <div className="ai-container">
       <h2 className="ai-title">Regex AI Assistant</h2>
 
-      <label htmlFor="mode">Select function:</label>
+      <label htmlFor="mode" className="form-label">
+        Select function:
+      </label>
       <select
         id="mode"
         value={mode}
         onChange={(e) => setMode(e.target.value)}
-        className="ai-select"
+        className="form-select mb-3"
       >
         <option value="explain">Explain Regex</option>
         <option value="generate">Generate Regex from Description</option>
@@ -75,15 +77,15 @@ const AIComponent = () => {
         <option value="test">Test Regex Against String</option>
       </select>
 
-      {mode === "explain" || mode === "optimize" || mode === "test" ? (
+      {(mode === "explain" || mode === "optimize" || mode === "test") && (
         <input
           type="text"
           placeholder="Enter regex"
           value={regex}
           onChange={(e) => setRegex(e.target.value)}
-          className="ai-input"
+          className="form-control mb-3"
         />
-      ) : null}
+      )}
 
       {mode === "generate" && (
         <input
@@ -91,7 +93,7 @@ const AIComponent = () => {
           placeholder="Describe what you want to match"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="ai-input"
+          className="form-control mb-3"
         />
       )}
 
@@ -101,16 +103,20 @@ const AIComponent = () => {
           placeholder="Enter a test string"
           value={testString}
           onChange={(e) => setTestString(e.target.value)}
-          className="ai-input"
+          className="form-control mb-3"
         />
       )}
 
-      <button onClick={handleSend} disabled={loading} className="ai-button">
+      <button
+        onClick={handleSend}
+        disabled={loading}
+        className="btn btn-primary w-100"
+      >
         {loading ? "Thinking..." : "Ask AI"}
       </button>
 
-      {error && <p className="ai-error">{error}</p>}
-      {response && <div className="ai-response">{response}</div>}
+      {error && <p className="text-danger mt-3">{error}</p>}
+      {response && <div className="ai-response mt-3 p-3 border rounded bg-light">{response}</div>}
     </div>
   );
 };

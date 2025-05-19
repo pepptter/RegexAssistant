@@ -1,34 +1,17 @@
 .ai-container {
-  margin: 2rem 0;
-}
+  max-width: 600px;
+  margin: 0 auto;
 
-.ai-title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
+  .ai-title {
+    color: $color-primary;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.75rem;
+  }
 
-.ai-input, .ai-select {
-  display: block;
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-.ai-button {
-  padding: 0.5rem 1rem;
-  margin-top: 0.5rem;
-  cursor: pointer;
-}
-
-.ai-response {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f2f2f2;
-  white-space: pre-wrap;
-}
-
-.ai-error {
-  color: red;
-  margin-top: 1rem;
+  .ai-response {
+    white-space: pre-wrap;
+    font-family: monospace;
+    color: $color-dark;
+  }
 }

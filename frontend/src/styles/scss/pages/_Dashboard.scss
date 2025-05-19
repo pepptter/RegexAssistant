@@ -1,26 +1,57 @@
-.dashboard-container {
-  padding: 20px;
-}
+.dashboard {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 
-.dashboard-title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
+  .dashboard-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
 
-.dashboard-description {
-  margin-bottom: 2rem;
-}
+    img {
+      height: 160px;
+      width: auto;
+      max-width: 100%;
+      margin-bottom: 1rem;
+    }
 
-.logout-button {
-  background-color: transparent;
-  border: 1px solid #333;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  color: #333;
-  margin-top: 2rem;
+    h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.5rem;
+      color: #0d6efd; // primary color
+      font-weight: 700;
+    }
 
-  &:hover {
-    background-color: #333;
-    color: white;
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #6c757d; // secondary color
+      max-width: 600px; // optional, to limit line length
+    }
+
+    @media (max-width: 600px) {
+      img {
+        height: 120px;
+        margin-bottom: 0.75rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  > div:not(.dashboard-header) {
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    padding: 1rem;
   }
 }

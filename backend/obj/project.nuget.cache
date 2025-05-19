@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TlxX+rDSUlM=",
+  "dgSpecHash": "86O1jWvISKk=",
   "success": true,
-  "projectFilePath": "C:\\plugg\\regex-assistant\\backend\\backend.csproj",
+  "projectFilePath": "C:\\plugg\\regex-assistant\\RegexAssistant\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\p0p\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\p0p\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.5\\microsoft.aspnetcore.authentication.jwtbearer.9.0.5.nupkg.sha512",

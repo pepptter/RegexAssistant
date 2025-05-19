@@ -14,7 +14,6 @@ const RegexForm = ({ onSubmit }: RegexFormProps) => {
   const [name, setName] = useState("");
   const [pattern, setPattern] = useState("");
   const [description, setDescription] = useState("");
-
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,13 +26,11 @@ const RegexForm = ({ onSubmit }: RegexFormProps) => {
 
     setError(null);
 
-    const regexData: RegexData = {
+    onSubmit?.({
       name: name.trim(),
       pattern: pattern.trim(),
       description: description.trim(),
-    };
-
-    onSubmit?.(regexData);
+    });
 
     setName("");
     setPattern("");
@@ -41,37 +38,46 @@ const RegexForm = ({ onSubmit }: RegexFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="regex-form">
-      <h3>Add a Regex Pattern</h3>
+    <form onSubmit={handleSubmit} className="regex-form mx-auto" style={{ maxWidth: 600 }}>
+      <h3 className="mb-4">Add a Regex Pattern</h3>
 
-      <input
-        type="text"
-        placeholder="Pattern Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="regex-input"
-      />
+      <div className="mb-3">
+        <input
+          type="text"
+          placeholder="Pattern Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="form-control"
+          required
+        />
+      </div>
 
-      <input
-        type="text"
-        placeholder="Regex Pattern"
-        value={pattern}
-        onChange={(e) => setPattern(e.target.value)}
-        className="regex-input"
-      />
+      <div className="mb-3">
+        <input
+          type="text"
+          placeholder="Regex Pattern"
+          value={pattern}
+          onChange={(e) => setPattern(e.target.value)}
+          className="form-control"
+          required
+        />
+      </div>
 
-      <textarea
-        placeholder="Optional Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        className="regex-textarea"
-      />
+      <div className="mb-3">
+        <textarea
+          placeholder="Optional Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="form-control"
+          rows={3}
+        />
+      </div>
 
-      <button type="submit" className="regex-button">
+      <button type="submit" className="btn btn-primary">
         Save Pattern
       </button>
 
-      {error && <p className="regex-error">{error}</p>}
+      {error && <p className="text-danger mt-3">{error}</p>}
     </form>
   );
 };

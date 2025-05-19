@@ -1,5 +1,4 @@
-@import "./global";
-@import "./variables";
-@import "./mixins";
-@import "./components/Components";
-@import "./pages/Pages";
+@import "bootstrap/scss/bootstrap";
+@import "utilities/utils";
+@import "components/components";
+@import "pages/Pages";

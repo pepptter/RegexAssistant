@@ -1,0 +1,22 @@
+.home {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  .title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: $color-primary;
+    margin-bottom: 1rem;
+  }
+
+  .intro {
+    font-size: 1.1rem;
+    color: $color-dark;
+    margin-bottom: 1.5rem;
+  }
+
+  .buttons a {
+    font-weight: 500;
+  }
+}

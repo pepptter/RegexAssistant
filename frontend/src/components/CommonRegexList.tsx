@@ -47,6 +47,7 @@ const CommonRegexList = ({ canSave }: { canSave: boolean }) => {
     const alreadySaved = regexList.some(
       (r) => r.name === pattern.name && r.userId !== null
     );
+
     if (alreadySaved) {
       setMessage("You already saved this regex.");
       return;
@@ -74,21 +75,40 @@ const CommonRegexList = ({ canSave }: { canSave: boolean }) => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading) return <p className="text-center my-3">Loading regex patterns...</p>;
+  if (error)
+    return (
+      <p className="text-danger text-center my-3">
+        {error}
+      </p>
+    );
 
   return (
-    <div className="common-regex-list">
+    <div className="common-regex-list container py-4">
       {regexList.map((regex) => (
-        <div key={regex.id} className="regex-item">
-          <strong>{regex.name}</strong>
-          <code>{regex.pattern}</code>
-          <p>{regex.description}</p>
+        <div key={regex.id} className="regex-card shadow-sm p-3 mb-4 mx-auto">
+          <div className="regex-header d-flex justify-content-between align-items-center mb-2">
+            <h5 className="regex-name mb-0">{regex.name}</h5>
+            <code className="regex-pattern">{regex.pattern}</code>
+          </div>
+          <p className="regex-description">{regex.description}</p>
 
           {canSave && token && regex.userId === null && (
             <>
-              <button onClick={() => handleSave(regex)}>Save to My List</button>
-              {message && <p style={{ color: "green" }}>{message}</p>}
+              <button
+                className="btn btn-outline-primary btn-sm"
+                onClick={() => {
+                  setMessage(null);
+                  handleSave(regex);
+                }}
+              >
+                Save to My List
+              </button>
+              {message && (
+                <p className="save-message text-success mt-2 fw-medium">
+                  {message}
+                </p>
+              )}
             </>
           )}
         </div>

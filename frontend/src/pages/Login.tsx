@@ -24,20 +24,44 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit} noValidate className="form">
-        <label>
-          Email:
-          <input name="email" type="email" value={credentials.email} onChange={handleChange} required />
-        </label>
-        <label>
-          Password:
-          <input name="password" type="password" value={credentials.password} onChange={handleChange} required />
-        </label>
-        <button type="submit" className="button">Login</button>
+    <div className="login container py-5">
+      <h1 className="title mb-4">Login</h1>
+      <form onSubmit={handleSubmit} noValidate className="login-form">
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email:
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={credentials.email}
+            onChange={handleChange}
+            required
+            className="form-control"
+            autoComplete="username"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="password" className="form-label">
+            Password:
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={credentials.password}
+            onChange={handleChange}
+            required
+            className="form-control"
+            autoComplete="current-password"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary w-100">
+          Login
+        </button>
       </form>
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error mt-3">{error}</p>}
     </div>
   );
 };

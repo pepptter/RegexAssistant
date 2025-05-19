@@ -1,22 +1,13 @@
 .save-feature {
-  margin-top: 2rem;
-  text-align: center;
-}
+  max-width: 600px;
+  margin: 0 auto;
 
-.save-title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
+  .save-title {
+    font-weight: 600;
+  }
 
-.save-button {
-  padding: 0.5rem 1rem;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-
-  &:hover {
-    background-color: #45a049;
+  .save-message {
+    font-size: 1rem;
+    color: $color-secondary;
   }
 }

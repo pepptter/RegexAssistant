@@ -1,118 +1,110 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { getAIExplanation } from "./utils/ai";
+import AIModal from "./AIModal";
 
 interface RegexPattern {
   id: number;
   name: string;
   pattern: string;
   description: string;
-  userId?: string | null;
 }
 
-const CommonRegexList = ({ canSave }: { canSave: boolean }) => {
+interface Props {
+  canSave?: boolean;
+  onSave?: (pattern: RegexPattern) => void;
+}
+
+const CommonRegexList: React.FC<Props> = ({ canSave = false, onSave }) => {
+  const [patterns, setPatterns] = useState<RegexPattern[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [aiExplanation, setAIExplanation] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPattern, setSelectedPattern] = useState<RegexPattern | null>(null);
   const { token } = useAuth();
-  const [regexList, setRegexList] = useState<RegexPattern[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchRegexes = async () => {
-      const endpoint = token ? "/api/regex" : "/api/regex/public";
+    fetch("https://localhost:7013/api/regex/public")
+      .then((res) => res.json())
+      .then((data: RegexPattern[]) => setPatterns(data))
+      .catch((err) => console.error("Failed to load regex patterns:", err));
+  }, []);
 
-      try {
-        const res = await fetch(endpoint, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch regex list");
-        }
-
-        const data = await res.json();
-        setRegexList(data);
-      } catch (err: any) {
-        setError(err.message || "Error loading regex patterns");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRegexes();
-  }, [token]);
-
-  const handleSave = async (pattern: RegexPattern) => {
-    if (!token) return;
-
-    const alreadySaved = regexList.some(
-      (r) => r.name === pattern.name && r.userId !== null
-    );
-
-    if (alreadySaved) {
-      setMessage("You already saved this regex.");
-      return;
-    }
-
+  const handleExplain = async (pattern: RegexPattern) => {
+    setLoading(true);
+    setSelectedPattern(pattern);
+    setModalOpen(true);
     try {
-      const res = await fetch("/api/regex", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: pattern.name,
-          pattern: pattern.pattern,
-          description: pattern.description,
-        }),
-      });
-
-      if (!res.ok) throw new Error("Failed to save regex");
-
-      setMessage("Regex saved successfully!");
-    } catch (err: any) {
-      setMessage(err.message || "Could not save");
+      const prompt = `Explain what this regex means: ${pattern.pattern}`;
+      const explanation = await getAIExplanation(prompt);
+      setAIExplanation(explanation);
+    } catch (err) {
+      console.error("AI explanation failed", err);
+      setAIExplanation("Sorry, AI could not explain this regex.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) return <p className="text-center my-3">Loading regex patterns...</p>;
-  if (error)
-    return (
-      <p className="text-danger text-center my-3">
-        {error}
-      </p>
-    );
+  const closeModal = () => {
+    setModalOpen(false);
+    setAIExplanation(null);
+    setSelectedPattern(null);
+  };
 
   return (
-    <div className="common-regex-list container py-4">
-      {regexList.map((regex) => (
-        <div key={regex.id} className="regex-card shadow-sm p-3 mb-4 mx-auto">
-          <div className="regex-header d-flex justify-content-between align-items-center mb-2">
-            <h5 className="regex-name mb-0">{regex.name}</h5>
-            <code className="regex-pattern">{regex.pattern}</code>
-          </div>
-          <p className="regex-description">{regex.description}</p>
+    <div className="common-regex-list">
+      <h2>Common Regexes</h2>
+      <p>Some commonly used regexes</p>
 
-          {canSave && token && regex.userId === null && (
-            <>
-              <button
-                className="btn btn-outline-primary btn-sm"
-                onClick={() => {
-                  setMessage(null);
-                  handleSave(regex);
-                }}
-              >
-                Save to My List
-              </button>
-              {message && (
-                <p className="save-message text-success mt-2 fw-medium">
-                  {message}
-                </p>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Pattern</th>
+            <th>Description</th>
+            {canSave && <th>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {patterns.map((p) => (
+            <tr key={p.id}>
+              <td>{p.name}</td>
+              <td><code>{p.pattern}</code></td>
+              <td>{p.description}</td>
+              {canSave && (
+                <td>
+                  <div className="d-flex gap-2">
+                    <button className="btn btn-primary btn-sm" onClick={() => onSave?.(p)}>Save</button>
+                    <button
+                      className="btn btn-outline-info btn-sm"
+                      onClick={() => handleExplain(p)}
+                      disabled={loading && selectedPattern?.id === p.id}
+                    >
+                      {loading && selectedPattern?.id === p.id ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          Explaining...
+                        </>
+                      ) : (
+                        "Explain more (AI)"
+                      )}
+                    </button>
+                  </div>
+                </td>
               )}
-            </>
-          )}
-        </div>
-      ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {modalOpen && selectedPattern && (
+        <AIModal
+          regex={selectedPattern.pattern}
+          explanation={aiExplanation}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 };

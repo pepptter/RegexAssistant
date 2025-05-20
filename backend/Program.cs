@@ -130,4 +130,13 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+
+    context.Database.EnsureCreated(); 
+    DbInitializer.SeedPublicRegexes(services);
+}
+
 app.Run();

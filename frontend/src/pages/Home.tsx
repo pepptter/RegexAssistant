@@ -19,7 +19,7 @@ const Home = () => {
       {!token && (
         <>
           <p className="intro">
-            Please log in or register to save regexes and access more features.
+            Please log in or register to use the AI, create and save regexes and more!
           </p>
           <div className="buttons mb-4">
             <a href="/login" className="btn btn-outline-primary me-2">

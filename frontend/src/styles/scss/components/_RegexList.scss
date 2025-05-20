@@ -1,0 +1,45 @@
+.common-regex-list {
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    .regex-item {
+      border: 1px solid var(--border-color, #ccc);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      background-color: var(--bg-secondary, #f8f9fa);
+
+      strong {
+        font-size: 1.2rem;
+        color: var(--text-primary, #0d6efd);
+      }
+
+      pre {
+        background-color: #eee;
+        padding: 0.5rem;
+        border-radius: 4px;
+        overflow-x: auto;
+      }
+
+      button {
+        margin-top: 0.5rem;
+        background-color: var(--accent-color, #0d6efd);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0b5ed7;
+      }
+    }
+  }
+}

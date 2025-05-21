@@ -1,70 +1,80 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-type RegexPattern = {
+interface RegexPattern {
   id: number;
   name: string;
   pattern: string;
   description: string;
-  userId?: string | null;
-};
+}
 
-const UserRegexList = () => {
-  const { token } = useAuth();
+const UserRegexList: React.FC = () => {
   const [patterns, setPatterns] = useState<RegexPattern[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { token } = useAuth();
 
   useEffect(() => {
-    if (!token) return;
-
-    const fetchUserRegexes = async () => {
+    const fetchUserPatterns = async () => {
       try {
         const res = await fetch("https://localhost:7013/api/regex", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        if (!res.ok) throw new Error("Failed to load regex patterns.");
-
-        const data = await res.json();
-        const userOnly = data.filter((r: RegexPattern) => r.userId !== null);
-        setPatterns(userOnly);
-      } catch (err: any) {
-        setError(err.message || "Something went wrong.");
-      } finally {
-        setLoading(false);
+        if (!res.ok) throw new Error("Failed to fetch user patterns");
+        const data: RegexPattern[] = await res.json();
+        setPatterns(data);
+      } catch (err) {
+        console.error("Error fetching user patterns:", err);
       }
     };
 
-    fetchUserRegexes();
+    fetchUserPatterns();
   }, [token]);
 
-  if (loading) return <p>Loading your saved regex patterns...</p>;
-  if (error)
-    return (
-      <p className="text-danger text-center my-3">
-        {error}
-      </p>
-    );
-
-  if (patterns.length === 0) {
-    return <p className="text-center my-3">You haven't saved any patterns yet.</p>;
-  }
+  const handleDelete = async (id: number) => {
+    try {
+      const res = await fetch(`https://localhost:7013/api/regex/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error("Could not delete pattern.");
+      setPatterns((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      alert((err as Error).message);
+    }
+  };
 
   return (
-    <div className="user-regex-list container py-4">
-      <h2 className="mb-4 text-primary">Your Saved Regex Patterns</h2>
-      <ul className="list-group">
-        {patterns.map(({ id, name, pattern, description }) => (
-          <li key={id} className="list-group-item mb-3">
-            <strong className="d-block mb-1">{name}</strong>
-            <code className="d-block mb-2">{pattern}</code>
-            <p className="mb-0 text-muted fst-italic">{description}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="user-regex-list">
+      <h2>My Saved Regexes</h2>
+      <div className="table-responsive">
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Pattern</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {patterns.map((p) => (
+              <tr key={p.id}>
+                <td>{p.name}</td>
+                <td><code>{p.pattern}</code></td>
+                <td>{p.description}</td>
+                <td>
+                  <button className="btn btn-danger" onClick={() => handleDelete(p.id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

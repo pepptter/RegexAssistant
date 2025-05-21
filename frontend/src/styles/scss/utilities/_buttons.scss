@@ -1,0 +1,31 @@
+.btn-gray {
+  background-color: $color-gray-dark;
+  color: $color-light;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.25rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken($color-gray-dark, 10%);
+  }
+}
+
+.btn-secondary {
+  background-color: #aaa;
+  color: #fff;
+
+  &:hover {
+    background-color: #888;
+  }
+}
+
+.btn-danger {
+  background-color: #d9534f;
+  color: #fff;
+
+  &:hover {
+    background-color: darken(#d9534f, 10%);
+  }
+}

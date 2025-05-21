@@ -29,3 +29,17 @@ export const saveRegexPattern = async (pattern: RegexPattern, token: string) => 
   if (!response.ok) throw new Error("Failed to save pattern");
   return await response.json();
 };
+
+export async function deleteRegex(id: number, token: string): Promise<void> {
+  const response = await fetch(`https://localhost:7013/api/regex/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to delete regex");
+  }
+}

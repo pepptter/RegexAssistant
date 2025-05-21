@@ -25,18 +25,44 @@
     }
   }
   .btn-danger {
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
 
-  &:hover {
-    background-color: #c82333;
+    &:hover {
+      background-color: #c82333;
+    }
   }
-}
 
+}
+.user-regex-list {
+  .btn-gray {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #333;
+    }
+  }
+
+  .ai-explanation-box {
+    max-width: 100%;
+    font-size: 0.95rem;
+
+    strong {
+      color: #2c3e50;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+  }
 }

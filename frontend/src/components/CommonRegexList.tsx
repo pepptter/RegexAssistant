@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getAIExplanation } from "./utils/AI";
 import { formatExplanation } from "./utils/AI";
+import { useAIExplain } from "./utils/useAIExplain";
 
 interface RegexPattern {
   id: number;
   name: string;
   pattern: string;
   description: string;
+  userId?: string | null;
 }
 
 interface Props {
@@ -52,41 +54,32 @@ const CommonRegexList: React.FC<Props> = ({ canSave = false, onSave }) => {
   };
 
 const handleSave = async (pattern: RegexPattern) => {
+  const { id, userId, ...cleanPattern } = pattern;
+
   try {
     const res = await fetch("https://localhost:7013/api/regex", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!res.ok) throw new Error("Failed to check existing patterns");
-
-    const userPatterns: RegexPattern[] = await res.json();
-
-    const alreadySaved = userPatterns.some(
-      (p) => p.pattern === pattern.pattern && p.userId !== null
-    );
-
-    if (alreadySaved) {
-      alert("You have already saved this pattern.");
-      return;
-    }
-
-    const saveRes = await fetch("https://localhost:7013/api/regex", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(pattern),
+      body: JSON.stringify(cleanPattern),
     });
 
-    if (!saveRes.ok) throw new Error("Could not save pattern.");
-    alert("Pattern saved successfully!");
+    if (!res.ok) {
+      const err = await res.text();
+      alert("Could not save pattern: " + err);
+      return;
+    }
+
+    alert("Pattern saved!");
   } catch (err) {
-    alert((err as Error).message);
+    alert("Something went wrong saving the pattern.");
+    console.error(err);
   }
 };
+
+
 
 
 
@@ -119,9 +112,10 @@ const handleSave = async (pattern: RegexPattern) => {
                         <button className="btn btn-gray" onClick={() => handleSave(p)}>
                           Save
                         </button>
-                        <button className="btn btn-gray" onClick={() => handleExplain(p)}>
+                        <button className="btn btn-gray" onClick={() => explain(p)}>
                           Explain with AI
                         </button>
+
                       </div>
                     </td>
                   </>

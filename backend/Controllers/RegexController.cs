@@ -28,7 +28,7 @@ namespace backend.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var patterns = await _context.RegexPatterns
-                .Where(r => r.UserId == userId || r.UserId == null)
+                .Where(r => r.UserId == userId)
                 .ToListAsync();
 
             return Ok(patterns);
@@ -44,13 +44,22 @@ namespace backend.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
 
+            var exists = await _context.RegexPatterns
+                .AnyAsync(r => r.UserId == userId &&
+                              (r.Name == pattern.Name || r.Pattern == pattern.Pattern));
+
+            if (exists)
+                return Conflict("You have already saved a regex with this name or pattern.");
+
             pattern.UserId = userId;
+            pattern.Id = 0;
 
             _context.RegexPatterns.Add(pattern);
             await _context.SaveChangesAsync();
 
             return Ok(pattern);
         }
+
 
         [HttpDelete("{id}")]
         [Authorize]

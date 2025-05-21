@@ -1,0 +1,62 @@
+.side-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 350px;
+  height: 100%;
+  background-color: $color-light;
+  border-left: 1px solid $color-dark;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  overflow-y: auto;
+  transition: right 0.3s ease;
+  z-index: 1050;
+
+  &.open {
+    right: 0;
+  }
+
+  .side-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h5 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: $color-dark;
+    }
+
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: $color-dark;
+
+      &:hover {
+        color: darken($color-dark, 15%);
+      }
+    }
+  }
+
+  .side-panel-body {
+    p {
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+      color: $color-dark;
+
+      code {
+        display: block;
+        background-color: #eee;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+      }
+
+      strong {
+        font-weight: 600;
+      }
+    }
+  }
+}

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { formatExplanation } from "./utils/AI";
+import { useAuth } from "../context/AuthContext";
+import { showToast } from "./utils/toast";
 
 const AIComponent = () => {
   const [mode, setMode] = useState("explain");
@@ -10,6 +12,7 @@ const AIComponent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [language, setLanguage] = useState<'en' | 'sv'>('en');
+  const { token } = useAuth();
 
   const labels = {
     en: {
@@ -34,15 +37,6 @@ const AIComponent = () => {
       jsonExtract: "Extrahera JSON från Text",
       toggleLanguage: "Byt till engelska",
     },
-  };
-
-  // Predefined prompts for examples
-  const examplePrompts = {
-    explain: 'Explain what this regex means: ',
-    validate: 'Is the regular expression ^(\\d+\\.?\\d*)$ valid?',
-    extractData: 'Write a regex that extracts the domain name from a URL.',
-    checkMistakes: 'Does the regex ^([a-zA-Z0-9_]+)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])$ overly complicated for validating a strong password?',
-    jsonExtract: 'Write a regex to extract JSON objects from a text string.',
   };
 
   const buildPrompt = () => {
@@ -84,49 +78,79 @@ const AIComponent = () => {
     }
   };
 
-  const handleSend = async () => {
-    setLoading(true);
-    setResponse(null);
-    setError(null);
+const handleSend = async () => {
+  setLoading(true);
+  setResponse(null);
+  setError(null);
 
-    try {
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-4",
-          messages: [
-            {
-              role: "user",
-              content: buildPrompt(),
-            },
-          ],
-        }),
-      });
+  const prompt = buildPrompt();
+  try {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+      }),
+    });
 
-      if (!res.ok) throw new Error("Failed to fetch response from OpenAI");
+    if (!res.ok) throw new Error("Failed to fetch response from OpenAI");
 
-      const data = await res.json();
-      setResponse(data.choices?.[0]?.message?.content || "No response.");
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const data = await res.json();
+    const answer = data.choices?.[0]?.message?.content || "No response.";
+    setResponse(answer);
+  } catch (err: any) {
+    setError(err.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+const handleSaveQuestion = async () => {
+  if (!token || !response) return;
+
+  const prompt = buildPrompt();
+  const userInput = mode === "generate" ? description : regex || testString;
+
+  try {
+    const res = await fetch("https://localhost:7013/api/aiquestions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        mode,
+        input: userInput,
+        prompt,
+        response,
+      }),
+    });
+
+    if (!res.ok) throw new Error("Could not save the question.");
+      showToast("Question saved!");  } catch (err: any) {
+    console.error(err);
+      showToast("Failed to save question.");
+  }
+};
+
+
 
   return (
     <div className="ai-container">
       <h2 className="ai-title" style={{ color: '$color-primary' }}>Regex AI Assistant</h2>
 
-      {/* Language Toggle */}
       <div className="language-toggle mb-3">
         <button
           onClick={() => setLanguage(language === 'en' ? 'sv' : 'en')}
-          className="btn btn-secondary"
+          className="btn btn-gray"
         >
           {language === 'en' ? labels.en.toggleLanguage : labels.sv.toggleLanguage}
         </button>
@@ -152,7 +176,6 @@ const AIComponent = () => {
         <option value="jsonExtract">{language === 'en' ? labels.en.jsonExtract : labels.sv.jsonExtract}</option>
       </select>
 
-      {/* Explanation Row */}
       <div className="explanation-row mb-3" style={{ color: '$color-secondary' }}>
         <p>
           {mode === "explain" && (language === 'en' ? "Enter a regex pattern and ask AI to explain it." : "Ange ett regex-mönster och be AI att förklara det.")}
@@ -166,7 +189,6 @@ const AIComponent = () => {
         </p>
       </div>
 
-      {/* Conditional Inputs */}
       {(mode === "explain" || mode === "optimize" || mode === "test" || mode === "validate" || mode === "checkMistakes") && (
         <input
           type="text"
@@ -234,8 +256,12 @@ const AIComponent = () => {
       {response && (
         <div className="ai-response mt-3 p-3 border rounded bg-light">
           {formatExplanation(response)}
+          <button className="btn btn-gray mt-3" onClick={handleSaveQuestion}>
+            Save this question
+          </button>
         </div>
       )}
+
 
     </div>
   );

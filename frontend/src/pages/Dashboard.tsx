@@ -8,6 +8,7 @@ import CommonRegexList from "../components/CommonRegexList";
 import UserRegexList from "../components/UserRegexList";
 
 import logolarge from "../assets/logotype-large.png";
+import SavedAIQuestions from "../components/SavedAIQuestions";
 
 const Dashboard = () => {
   const { token } = useAuth();
@@ -30,7 +31,9 @@ const [activeTab, setActiveTab] = useState("common");
         return <CommonRegexList canSave={true} />;
       case "user":
         return <UserRegexList />;
-      default:
+      case "question":
+        return <SavedAIQuestions />;
+      case "question":
         return null;
     }
   };
@@ -62,6 +65,12 @@ const [activeTab, setActiveTab] = useState("common");
         >
           Ask AI
         </button>
+        <button
+          className={activeTab === "question" ? "active" : ""}
+          onClick={() => setActiveTab("question")}
+        >
+          Saved AI Questions
+        </button>
 
       </aside>
 
@@ -70,8 +79,8 @@ const [activeTab, setActiveTab] = useState("common");
           <div className="dashboard-header">
             <img src={logolarge} alt="Logo" />
             <div>
-              <h1 className="mb-3 text-primary">Dashboard</h1>
-              <p className="mb-4 text-secondary">
+              <h1 className="mb-3">Dashboard</h1>
+              <p className="mb-4 ">
                 Welcome! Here you can manage and explore regex patterns.
               </p>
             </div>

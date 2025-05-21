@@ -8,6 +8,7 @@ namespace backend.Data
     {
         public DbSet<RegexPattern> RegexPatterns { get; set; }
         public DbSet<CommonRegex> CommonRegexes { get; set; }
+        public DbSet<AIQuestion> AIQuestions { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)

@@ -143,93 +143,89 @@ const handleDeleteExplanation = async () => {
   };
 
   return (
-    <div className="user-regex-list">
-      <h2>My Saved Regexes</h2>
-      {error && <p className="text-danger">{error}</p>}
-
-      {patterns.length === 0 ? (
-        <p>You haven't saved any patterns yet.</p>
-      ) : (
-        <div className="table-responsive">
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Pattern</th>
-                <th>Description</th>
-                <th>Actions</th>
-                <th>Saved AI Explanation</th>
-              </tr>
-            </thead>
-            <tbody>
-              {patterns.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.name}</td>
-                  <td><code>{p.pattern}</code></td>
-                  <td>{p.description}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <button className="btn btn-gray" onClick={() => handleExplain(p)}>
-                        Explain with AI
-                      </button>
-                      <button className="btn btn-gray" onClick={() => setConfirmDeleteId(p.id)}>
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    {p.savedExplanation ? (
+    <div className="dashboard-section">
+      <div className="user-regex-list">
+        <h2>My Saved Regexes</h2>
+        {error && <p className="text-danger">{error}</p>}
+        {patterns.length === 0 ? (
+          <p>You haven't saved any patterns yet.</p>
+        ) : (
+          <div className="table-responsive">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Pattern</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                  <th>Saved AI Explanation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {patterns.map((p) => (
+                  <tr key={p.id}>
+                    <td>{p.name}</td>
+                    <td><code>{p.pattern}</code></td>
+                    <td>{p.description}</td>
+                    <td>
                       <div className="action-buttons">
-                        <button
-                          className="btn btn-gray"
-                          onClick={() => {
-                            setSelectedPattern(p);
-                            setAIExplanation(p.savedExplanation || null);
-                          }}
-                        >
-                          Show Saved Explanation
+                        <button className="btn btn-gray" onClick={() => handleExplain(p)}>
+                          Explain with AI
+                        </button>
+                        <button className="btn btn-gray" onClick={() => setConfirmDeleteId(p.id)}>
+                          Delete
                         </button>
                       </div>
-                    ) : (
-                      <span className="text-muted">No extra explanation saved</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {confirmDeleteId !== null && (
-        <>
-          <div className="confirm-overlay" onClick={() => setConfirmDeleteId(null)} />
-          <div className="confirm-modal">
-            <p>Are you sure you want to delete this regex?</p>
-            <div className="d-flex justify-content-center gap-2 mt-3">
-              <button className="btn btn-danger" onClick={() => handleDelete(confirmDeleteId)}>
-                Yes, Delete
-              </button>
-              <button className="btn btn-secondary" onClick={() => setConfirmDeleteId(null)}>
-                Cancel
-              </button>
-            </div>
+                    </td>
+                    <td>
+                      {p.savedExplanation ? (
+                        <div className="action-buttons">
+                          <button
+                            className="btn btn-gray"
+                            onClick={() => {
+                              setSelectedPattern(p);
+                              setAIExplanation(p.savedExplanation || null);
+                            }}
+                          >
+                            Show Saved Explanation
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-muted">No extra explanation saved</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </>
-      )}
-
-      <AISidePanel
-        isOpen={!!selectedPattern}
-        pattern={selectedPattern}
-        explanation={aiExplanation}
-        loading={loading}
-        onClose={closePanel}
-        onSaveExplanation={handleSaveExplanation}
-        onDeleteExplanation={handleDeleteExplanation}
-      />
-
-
-
+        )}
+        {confirmDeleteId !== null && (
+          <>
+            <div className="confirm-overlay" onClick={() => setConfirmDeleteId(null)} />
+            <div className="confirm-modal">
+              <p>Are you sure you want to delete this regex?</p>
+              <div className="d-flex justify-content-center gap-2 mt-3">
+                <button className="btn btn-danger" onClick={() => handleDelete(confirmDeleteId)}>
+                  Yes, Delete
+                </button>
+                <button className="btn btn-secondary" onClick={() => setConfirmDeleteId(null)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+        <AISidePanel
+          isOpen={!!selectedPattern}
+          pattern={selectedPattern}
+          explanation={aiExplanation}
+          loading={loading}
+          onClose={closePanel}
+          onSaveExplanation={handleSaveExplanation}
+          onDeleteExplanation={handleDeleteExplanation}
+        />
+      </div>
     </div>
   );
 };

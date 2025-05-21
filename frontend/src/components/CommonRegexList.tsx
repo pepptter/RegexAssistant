@@ -132,87 +132,86 @@ const CommonRegexList: React.FC<Props> = ({ canSave = false }) => {
       <h2>Common Regexes</h2>
       <p>Some commonly used regexes</p>
 
-      <div className="table-responsive">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Pattern</th>
-              <th>Description</th>
-              {canSave && <th>Actions</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {patterns.map((p) => (
-              <tr key={p.id}>
-                <td>{p.name}</td>
-                <td><code>{p.pattern}</code></td>
-                <td>{p.description}</td>
-                {canSave && (
-                  <td>
-                    <div className="action-buttons">
-                      <button
-                        className="btn btn-gray"
-                        onClick={async () => {
-                          try {
-                            const res = await fetch("https://localhost:7013/api/regex", {
-                              method: "POST",
-                              headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${token}`,
-                              },
-                              body: JSON.stringify({
-                                name: p.name,
-                                pattern: p.pattern,
-                                description: p.description,
-                              }),
-                            });
-
-                            if (!res.ok) {
-                              const errorText = await res.text();
-                              showToast("Failed to save regex: " + errorText);
-                            } else {
-                              showToast("Regex saved successfully!");
-                            }
-                          } catch (err) {
-                            console.error(err);
-                            showToast("An error occurred while saving.");
-                          }
-                        }}
-                      >
-                        Save
-                      </button>
-                                            <button
-                        className="btn btn-gray"
-                        onClick={() => {
-                          if (selectedPattern?.id === p.id) {
-                            closePanel();
-                          } else {
-                            handleExplain(p);
-                          }
-                        }}
-                      >
-                        {selectedPattern?.id === p.id ? "Hide" : "Explain with AI"}
-                      </button>
-                    </div>
-
-                  </td>
-                )}
+      <div className="|">
+        <div className="table-responsive">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Pattern</th>
+                <th>Description</th>
+                {canSave && <th>Actions</th>}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {patterns.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.name}</td>
+                  <td><code>{p.pattern}</code></td>
+                  <td>{p.description}</td>
+                  {canSave && (
+                    <td>
+                      <div className="action-buttons">
+                        <button
+                          className="btn btn-gray"
+                          onClick={async () => {
+                            try {
+                              const res = await fetch("https://localhost:7013/api/regex", {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${token}`,
+                                },
+                                body: JSON.stringify({
+                                  name: p.name,
+                                  pattern: p.pattern,
+                                  description: p.description,
+                                }),
+                              });
+                              if (!res.ok) {
+                                const errorText = await res.text();
+                                showToast("Failed to save regex: " + errorText);
+                              } else {
+                                showToast("Regex saved successfully!");
+                              }
+                            } catch (err) {
+                              console.error(err);
+                              showToast("An error occurred while saving.");
+                            }
+                          }}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="btn btn-gray"
+                          onClick={() => {
+                            if (selectedPattern?.id === p.id) {
+                              closePanel();
+                            } else {
+                              handleExplain(p);
+                            }
+                          }}
+                        >
+                          {selectedPattern?.id === p.id ? "Hide" : "Explain with AI"}
+                        </button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <AISidePanel
+          isOpen={!!selectedPattern}
+          pattern={selectedPattern}
+          explanation={aiExplanation}
+          loading={loading}
+          onClose={closePanel}
+          onSaveExplanation={handleSaveWithExplanation}
+        />
+            </div>
       </div>
-
-      <AISidePanel
-        isOpen={!!selectedPattern}
-        pattern={selectedPattern}
-        explanation={aiExplanation}
-        loading={loading}
-        onClose={closePanel}
-        onSaveExplanation={handleSaveWithExplanation}
-      />
-    </div>
   );
 };
 

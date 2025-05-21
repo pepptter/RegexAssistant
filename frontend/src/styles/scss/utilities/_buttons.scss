@@ -1,8 +1,7 @@
 .btn-gray {
-    background-color: $color-medium;
+    background-color: $color-gray;
     color: white;
-    font-size: 0.85rem;
-    padding: 0.35rem 0.75rem;
+    font-size:1rem;
     border: none;
     border-radius: 0.25rem;
     white-space: nowrap;
@@ -10,6 +9,7 @@
 
     &:hover {
       background-color: darken($color-medium, 8%);
+      color: white;
     }
   }
 
@@ -43,3 +43,13 @@
     align-items: stretch;
   }
 }
+.btn-login {
+      background-color: $color-secondary;
+      color: $color-white;
+      border: 1px solid $color-secondary;
+
+      &:hover {
+        color:white;
+        background-color: darken($color-secondary, 10%);
+      }
+    }

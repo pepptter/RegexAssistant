@@ -5,9 +5,9 @@ export function showToast(message: string, type: "success" | "error" = "success"
 
   Object.assign(toast.style, {
     position: "fixed",
-    top: "30%",
+    bottom: "50%",
     left: "50%",
-    transform: "translate(-50%, -50%)",
+    transform: "translateX(-50%)",
     backgroundColor: type === "success" ? "#2ecc71" : "#e74c3c",
     color: "white",
     padding: "10px 20px",

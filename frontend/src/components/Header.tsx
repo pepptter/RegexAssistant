@@ -30,13 +30,13 @@ const Header = () => {
             </>
           ) : (
             <>
-              <Link to="/dashboard" className="header-link">Dashboard</Link>
+
             </>
           )}
         </nav>
 
         {token && (
-          <button onClick={handleLogout} className="logout-btn">
+          <button onClick={handleLogout} className="btn btn-login">
             Logout
           </button>
         )}

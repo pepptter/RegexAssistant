@@ -1,0 +1,21 @@
+.dashboard-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: $color-light;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .form-select,
+  .form-control {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-color: $color-gray;
+  }
+
+  
+
+  .text-danger {
+    color: #dc3545;
+  }
+}

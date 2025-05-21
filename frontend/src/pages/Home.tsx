@@ -14,18 +14,18 @@ const Home = () => {
   }, [token, navigate]);
 
   return (
-    <div className="home container py-5">
-      <h1 className="title">Welcome to Regex Assistant</h1>
+    <div className="home container py-5 d-flex flex-column justify-content-center align-items-center">
+      <h1 className="title text-center mb-4">Welcome to Regex Assistant</h1>
       {!token && (
         <>
-          <p className="intro">
+          <p className="intro text-center mb-4">
             Please log in or register to use the AI, create and save regexes and more!
           </p>
-          <div className="buttons mb-4">
-            <a href="/login" className="btn btn-outline-primary me-2">
+          <div className="buttons mb-4 d-flex justify-content-center gap-3">
+            <a href="/login" className="btn btn-login">
               Login
             </a>
-            <a href="/register" className="btn btn-primary">
+            <a href="/register" className="btn btn-login">
               Register
             </a>
           </div>

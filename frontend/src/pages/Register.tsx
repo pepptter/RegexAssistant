@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
@@ -9,7 +10,8 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const { login } = useAuth();
+  
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage(null);
@@ -40,7 +42,13 @@ const Register = () => {
         return;
       }
 
-      navigate("/login");
+      // Attempt login right after registration
+      const loginResult = await login(email, password);
+      if (loginResult.success) {
+        navigate("/dashboard");
+      } else {
+        setMessage(loginResult.message || "Login failed after registration.");
+      }
     } catch (error) {
       setMessage("Something went wrong.");
     }

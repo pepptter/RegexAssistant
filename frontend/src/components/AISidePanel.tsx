@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { formatExplanation } from "./utils/AI";
 
 interface AISidePanelProps {
@@ -11,7 +11,6 @@ interface AISidePanelProps {
   onDeleteExplanation?: () => void;
 }
 
-
 const AISidePanel: React.FC<AISidePanelProps> = ({
   isOpen,
   pattern,
@@ -21,16 +20,22 @@ const AISidePanel: React.FC<AISidePanelProps> = ({
   onSaveExplanation,
   onDeleteExplanation,
 }) => {
+  const [expanded, setExpanded] = useState(false);
 
   if (!pattern) return null;
 
   return (
-    <div className={`side-panel ${isOpen ? "open" : ""}`}>
+    <div className={`side-panel ${isOpen ? "open" : ""} ${expanded ? "expanded" : ""}`}>
       <div className="side-panel-header">
         <h5>Explanation</h5>
-        <button className="close-button" onClick={onClose}>
-          ×
-        </button>
+        <div className="side-panel-buttons">
+          <button className="btn-expand" onClick={() => setExpanded((prev) => !prev)}>
+            {expanded ? "Collapse" : "Expand"}
+          </button>
+          <button className="close-button" onClick={onClose}>
+            ×
+          </button>
+        </div>
       </div>
       <div className="side-panel-body">
         <p>
@@ -44,8 +49,8 @@ const AISidePanel: React.FC<AISidePanelProps> = ({
         ) : (
           <p>{formatExplanation(explanation || "")}</p>
         )}
-        {explanation && (
-          onSaveExplanation && !pattern.savedExplanation ? (
+        {explanation &&
+          (onSaveExplanation && !pattern.savedExplanation ? (
             <button className="btn-save-explanation mt-3" onClick={onSaveExplanation}>
               Save Explanation
             </button>
@@ -53,10 +58,7 @@ const AISidePanel: React.FC<AISidePanelProps> = ({
             <button className="btn-delete-explanation mt-3" onClick={onDeleteExplanation}>
               Delete Saved Explanation
             </button>
-          ) : null
-        )}
-
-
+          ) : null)}
       </div>
     </div>
   );

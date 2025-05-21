@@ -40,15 +40,17 @@ const SaveFeature = () => {
 
 
   return (
-    <div className="save-feature mb-4">
-      <h2 className="save-title mb-3">Create And Save Your Regex</h2>
-      <RegexForm onSubmit={handleSave} />
-      {message && (
-        <p className="save-message mt-3 text-center text-success">
-          {message}
-        </p>
-      )}
+    <div className="dashboard-section">
+      <div className="save-feature mb-4">
+        <h2>Create And Save Your Regex</h2>
+        <RegexForm onSubmit={handleSave} />
+        {message && (
+          <p className="save-message mt-3 text-center text-success">
+            {message}
+          </p>
+        )}
     </div>
+  </div>
   );
 };
 

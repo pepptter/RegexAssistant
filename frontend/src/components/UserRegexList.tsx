@@ -100,11 +100,22 @@ const handleSaveExplanation = async () => {
 
     showToast("Explanation saved successfully!");
 
+    setPatterns((prev) =>
+      prev.map((p) =>
+        p.id === selectedPattern.id ? { ...p, savedExplanation: aiExplanation } : p
+      )
+    );
+
+    setSelectedPattern((prev) =>
+      prev ? { ...prev, savedExplanation: aiExplanation } : prev
+    );
+
   } catch (err) {
     console.error(err);
     showToast("Could not save explanation.");
   }
 };
+
 const handleDeleteExplanation = async () => {
   if (!selectedPattern) return;
 

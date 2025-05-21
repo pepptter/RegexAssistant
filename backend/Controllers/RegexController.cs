@@ -86,6 +86,24 @@ namespace backend.Controllers
 
             return Ok(publicPatterns);
         }
+        [HttpPut("{id}/explanation")]
+        [Authorize]
+        public async Task<IActionResult> UpdateExplanation(int id, [FromBody] string explanation)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+
+            var pattern = await _context.RegexPatterns
+                .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+
+            if (pattern == null) return NotFound();
+
+            pattern.SavedExplanation = explanation;
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
 
     }
 }

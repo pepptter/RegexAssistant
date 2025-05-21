@@ -7,35 +7,37 @@ const SaveFeature = () => {
   const [message, setMessage] = useState<string | null>(null);
 
   const handleSave = async (data: {
-    name: string;
-    pattern: string;
-    description?: string;
-  }) => {
-    if (!token) {
-      setMessage("You must be logged in to save.");
-      return;
+  name: string;
+  pattern: string;
+  description?: string;
+  savedAIExplanation?: string;
+}) => {
+  if (!token) {
+    setMessage("You must be logged in to save.");
+    return;
+  }
+
+  try {
+    const response = await fetch("https://localhost:7013/api/regex", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(errText);
     }
 
-    try {
-      const response = await fetch("https://localhost:7013/api/regex/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
+    setMessage("Regex saved successfully!");
+  } catch (err: any) {
+    setMessage(err.message || "Something went wrong.");
+  }
+};
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.message || "Failed to save pattern.");
-      }
-
-      setMessage("Regex saved successfully!");
-    } catch (err: any) {
-      setMessage(err.message || "Something went wrong.");
-    }
-  };
 
   return (
     <div className="save-feature mb-4">

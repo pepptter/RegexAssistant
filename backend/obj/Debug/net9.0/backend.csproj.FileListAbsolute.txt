@@ -335,10 +335,10 @@ C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\staticwebassets
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.backend.props
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.backend.props
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\staticwebassets.pack.json
-C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\backend.csproj.Up2Date
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\backend.dll
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\refint\backend.dll
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\backend.pdb
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\backend.genruntimeconfig.cache
 C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\ref\backend.dll
+C:\plugg\regex-assistant\RegexAssistant\backend\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

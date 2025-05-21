@@ -16,6 +16,9 @@ namespace backend.Models
 
         public string? UserId { get; set; }
 
+        public string? SavedExplanation { get; set; }
+
+
         [NotMapped]
         public bool IsGlobal => string.IsNullOrEmpty(UserId);
     }

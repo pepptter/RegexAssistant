@@ -75,6 +75,27 @@
   },
   {
     "ContainingType": "backend.Controllers.RegexController",
+    "Method": "UpdateExplanation",
+    "RelativePath": "api/regex/{id}/explanation",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "explanation",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "backend.Controllers.RegexController",
     "Method": "GetPublic",
     "RelativePath": "api/regex/public",
     "HttpMethod": "GET",

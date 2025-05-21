@@ -3,11 +3,14 @@ import { formatExplanation } from "./utils/AI";
 
 interface AISidePanelProps {
   isOpen: boolean;
-  pattern: { name: string; pattern: string } | null;
+  pattern: { name: string; pattern: string; savedExplanation?: string } | null;
   explanation: string | null;
   loading: boolean;
   onClose: () => void;
+  onSaveExplanation?: () => void;
+  onDeleteExplanation?: () => void;
 }
+
 
 const AISidePanel: React.FC<AISidePanelProps> = ({
   isOpen,
@@ -15,7 +18,10 @@ const AISidePanel: React.FC<AISidePanelProps> = ({
   explanation,
   loading,
   onClose,
+  onSaveExplanation,
+  onDeleteExplanation,
 }) => {
+
   if (!pattern) return null;
 
   return (
@@ -38,6 +44,19 @@ const AISidePanel: React.FC<AISidePanelProps> = ({
         ) : (
           <p>{formatExplanation(explanation || "")}</p>
         )}
+        {explanation && (
+          onSaveExplanation && !pattern.savedExplanation ? (
+            <button className="btn-save-explanation mt-3" onClick={onSaveExplanation}>
+              Save Explanation
+            </button>
+          ) : onDeleteExplanation ? (
+            <button className="btn-delete-explanation mt-3" onClick={onDeleteExplanation}>
+              Delete Saved Explanation
+            </button>
+          ) : null
+        )}
+
+
       </div>
     </div>
   );

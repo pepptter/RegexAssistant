@@ -51,17 +51,18 @@ const [activeTab, setActiveTab] = useState("common");
           Create Your Own Regex
         </button>
         <button
-          className={activeTab === "ai" ? "active" : ""}
-          onClick={() => setActiveTab("ai")}
-        >
-          Ask AI
-        </button>
-        <button
           className={activeTab === "user" ? "active" : ""}
           onClick={() => setActiveTab("user")}
         >
           My Saved Regexes
         </button>
+        <button
+          className={activeTab === "ai" ? "active" : ""}
+          onClick={() => setActiveTab("ai")}
+        >
+          Ask AI
+        </button>
+
       </aside>
 
       <main className="dashboard container py-4">

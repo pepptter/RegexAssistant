@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getAIExplanation } from "./utils/AI";
-import { formatExplanation } from "./utils/AI";
+import { getAIExplanation, formatExplanation } from "./utils/AI";
+import AISidePanel from "./AISidePanel";
+import { showToast } from "./utils/toast";
 
 interface RegexPattern {
   id: number;
   name: string;
   pattern: string;
   description: string;
-  userId?: string | null;
+  userId?: string;
+  savedExplanation?: string;
 }
 
 interface Props {
   canSave?: boolean;
-  onSave?: (pattern: RegexPattern) => void;
 }
 
-const CommonRegexList: React.FC<Props> = ({ canSave = false, onSave }) => {
+const CommonRegexList: React.FC<Props> = ({ canSave = false }) => {
   const [patterns, setPatterns] = useState<RegexPattern[]>([]);
   const [selectedPattern, setSelectedPattern] = useState<RegexPattern | null>(null);
   const [aiExplanation, setAIExplanation] = useState<string | null>(null);
@@ -47,41 +48,84 @@ const CommonRegexList: React.FC<Props> = ({ canSave = false, onSave }) => {
     }
   };
 
+  const handleSaveWithExplanation = async () => {
+    if (!selectedPattern || !aiExplanation) return;
+
+    let savedId = selectedPattern.id;
+
+    try {
+      const checkRes = await fetch("https://localhost:7013/api/regex", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const userSaved: RegexPattern[] = await checkRes.json();
+      const match = userSaved.find(
+        (r) => r.pattern === selectedPattern.pattern || r.name === selectedPattern.name
+      );
+
+      if (match) {
+        const exists = match.savedExplanation;
+        if (exists && !window.confirm("An explanation already exists. Replace it?")) return;
+
+        const put = await fetch(`https://localhost:7013/api/regex/${match.id}/explanation`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(aiExplanation),
+        });
+
+        if (!put.ok) throw new Error("Failed to update explanation");
+
+        showToast("Explanation saved!");
+        setPatterns((prev) =>
+          prev.map((p) => (p.id === match.id ? { ...p, savedExplanation: aiExplanation } : p))
+        );
+        setSelectedPattern((prev) =>
+          prev ? { ...prev, savedExplanation: aiExplanation } : prev
+        );
+        return;
+      }
+
+      const createRes = await fetch("https://localhost:7013/api/regex", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: selectedPattern.name,
+          pattern: selectedPattern.pattern,
+          description: selectedPattern.description,
+          savedExplanation: aiExplanation,
+        }),
+      });
+
+      if (!createRes.ok) throw new Error("Could not save new regex.");
+
+      const saved = await createRes.json();
+      setPatterns((prev) =>
+        prev.map((p) =>
+          p.id === selectedPattern.id ? { ...p, id: saved.id, userId: saved.userId, savedExplanation: aiExplanation } : p
+        )
+      );
+
+      setSelectedPattern((prev) =>
+        prev ? { ...prev, id: saved.id, userId: saved.userId, savedExplanation: aiExplanation } : prev
+      );
+
+      showToast("Pattern and explanation saved!");
+    } catch (err: any) {
+      console.error(err);
+      showToast(err.message || "Save failed.");
+    }
+  };
+
   const closePanel = () => {
     setSelectedPattern(null);
     setAIExplanation(null);
   };
-
-const handleSave = async (pattern: RegexPattern) => {
-  const { id, userId, ...cleanPattern } = pattern;
-
-  try {
-    const res = await fetch("https://localhost:7013/api/regex", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(cleanPattern),
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
-      alert("Could not save pattern: " + err);
-      return;
-    }
-
-    alert("Pattern saved!");
-  } catch (err) {
-    alert("Something went wrong saving the pattern.");
-    console.error(err);
-  }
-};
-
-
-
-
-
 
   return (
     <div className="common-regex-list">
@@ -105,19 +149,54 @@ const handleSave = async (pattern: RegexPattern) => {
                 <td><code>{p.pattern}</code></td>
                 <td>{p.description}</td>
                 {canSave && (
-                  <>
-                    <td>
-                      <div className="action-buttons">
-                        <button className="btn btn-gray" onClick={() => handleSave(p)}>
-                          Save
-                        </button>
-                      <button className="btn btn-gray" onClick={() => handleExplain(p)}>
-                          Explain with AI
-                        </button>
+                  <td>
+                    <div className="action-buttons">
+                      <button
+                        className="btn btn-gray"
+                        onClick={async () => {
+                          try {
+                            const res = await fetch("https://localhost:7013/api/regex", {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`,
+                              },
+                              body: JSON.stringify({
+                                name: p.name,
+                                pattern: p.pattern,
+                                description: p.description,
+                              }),
+                            });
 
-                      </div>
-                    </td>
-                  </>
+                            if (!res.ok) {
+                              const errorText = await res.text();
+                              showToast("Failed to save regex: " + errorText);
+                            } else {
+                              showToast("Regex saved successfully!");
+                            }
+                          } catch (err) {
+                            console.error(err);
+                            showToast("An error occurred while saving.");
+                          }
+                        }}
+                      >
+                        Save
+                      </button>
+                                            <button
+                        className="btn btn-gray"
+                        onClick={() => {
+                          if (selectedPattern?.id === p.id) {
+                            closePanel();
+                          } else {
+                            handleExplain(p);
+                          }
+                        }}
+                      >
+                        {selectedPattern?.id === p.id ? "Hide" : "Explain with AI"}
+                      </button>
+                    </div>
+
+                  </td>
                 )}
               </tr>
             ))}
@@ -125,24 +204,14 @@ const handleSave = async (pattern: RegexPattern) => {
         </table>
       </div>
 
-      {selectedPattern && (
-        <div className={`side-panel ${selectedPattern ? "open" : ""}`}>
-          <div className="side-panel-header">
-            <h5>Explanation</h5>
-            <button className="close-button" onClick={closePanel}>×</button>
-          </div>
-          <div className="side-panel-body">
-            <p><strong>{selectedPattern.name}</strong></p>
-            <p><code>{selectedPattern.pattern}</code></p>
-            {loading ? (
-              <p>Loading explanation...</p>
-            ) : aiExplanation ? (
-              <p>{formatExplanation(aiExplanation)}</p>
-            ) : null}
-
-          </div>
-        </div>
-      )}
+      <AISidePanel
+        isOpen={!!selectedPattern}
+        pattern={selectedPattern}
+        explanation={aiExplanation}
+        loading={loading}
+        onClose={closePanel}
+        onSaveExplanation={handleSaveWithExplanation}
+      />
     </div>
   );
 };

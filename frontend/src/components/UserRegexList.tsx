@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getAIExplanation } from "./utils/AI";
 import AISidePanel from "./AISidePanel";
+import { showToast } from "./utils/toast";
 
 interface RegexPattern {
   id: number;
@@ -9,7 +10,9 @@ interface RegexPattern {
   pattern: string;
   description: string;
   userId?: string;
+  savedExplanation?: string;
 }
+
 
 const UserRegexList: React.FC = () => {
   const { token } = useAuth();
@@ -59,6 +62,7 @@ const UserRegexList: React.FC = () => {
       if (!res.ok) throw new Error("Failed to delete pattern.");
 
       setPatterns((prev) => prev.filter((p) => p.id !== id));
+      setConfirmDeleteId(null);
     } catch (err: any) {
       alert(err.message || "Delete failed.");
     }
@@ -79,6 +83,59 @@ const UserRegexList: React.FC = () => {
       setLoading(false);
     }
   };
+const handleSaveExplanation = async () => {
+  if (!selectedPattern || !aiExplanation) return;
+
+  try {
+    const res = await fetch(`https://localhost:7013/api/regex/${selectedPattern.id}/explanation`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(aiExplanation),
+    });
+
+    if (!res.ok) throw new Error("Failed to save explanation");
+
+    showToast("Explanation saved successfully!");
+
+  } catch (err) {
+    console.error(err);
+    showToast("Could not save explanation.");
+  }
+};
+const handleDeleteExplanation = async () => {
+  if (!selectedPattern) return;
+
+  try {
+    const res = await fetch(`https://localhost:7013/api/regex/${selectedPattern.id}/explanation`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(""),
+    });
+
+    if (!res.ok) throw new Error("Failed to delete explanation");
+
+    showToast("Explanation deleted!");
+
+    setPatterns((prev) =>
+      prev.map((p) =>
+        p.id === selectedPattern.id ? { ...p, savedExplanation: undefined } : p
+      )
+    );
+
+    setAIExplanation(null);
+  } catch (err) {
+    console.error(err);
+    showToast("Could not delete explanation.");
+  }
+};
+
+
 
   const closePanel = () => {
     setSelectedPattern(null);
@@ -101,6 +158,7 @@ const UserRegexList: React.FC = () => {
                 <th>Pattern</th>
                 <th>Description</th>
                 <th>Actions</th>
+                <th>Saved AI Explanation</th>
               </tr>
             </thead>
             <tbody>
@@ -110,7 +168,7 @@ const UserRegexList: React.FC = () => {
                   <td><code>{p.pattern}</code></td>
                   <td>{p.description}</td>
                   <td>
-                    <div className="d-flex flex-column flex-md-row gap-2">
+                    <div className="action-buttons">
                       <button className="btn btn-gray" onClick={() => handleExplain(p)}>
                         Explain with AI
                       </button>
@@ -119,29 +177,45 @@ const UserRegexList: React.FC = () => {
                       </button>
                     </div>
                   </td>
+                  <td>
+                    {p.savedExplanation ? (
+                      <div className="action-buttons">
+                        <button
+                          className="btn btn-gray"
+                          onClick={() => {
+                            setSelectedPattern(p);
+                            setAIExplanation(p.savedExplanation || null);
+                          }}
+                        >
+                          Show Saved Explanation
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-muted">No extra explanation saved</span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
       {confirmDeleteId !== null && (
-        <div className="modal-backdrop">
-          <div className="modal-box">
+        <>
+          <div className="confirm-overlay" onClick={() => setConfirmDeleteId(null)} />
+          <div className="confirm-modal">
             <p>Are you sure you want to delete this regex?</p>
-            <div className="d-flex justify-content-end gap-2 mt-3">
+            <div className="d-flex justify-content-center gap-2 mt-3">
+              <button className="btn btn-danger" onClick={() => handleDelete(confirmDeleteId)}>
+                Yes, Delete
+              </button>
               <button className="btn btn-secondary" onClick={() => setConfirmDeleteId(null)}>
                 Cancel
               </button>
-              <button className="btn btn-danger" onClick={() => {
-                handleDelete(confirmDeleteId);
-                setConfirmDeleteId(null);
-              }}>
-                Delete
-              </button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       <AISidePanel
@@ -150,7 +224,12 @@ const UserRegexList: React.FC = () => {
         explanation={aiExplanation}
         loading={loading}
         onClose={closePanel}
+        onSaveExplanation={handleSaveExplanation}
+        onDeleteExplanation={handleDeleteExplanation}
       />
+
+
+
     </div>
   );
 };

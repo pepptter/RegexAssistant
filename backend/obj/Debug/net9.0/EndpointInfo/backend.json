@@ -143,6 +143,48 @@
         }
       }
     },
+    "/api/regex/{id}/explanation": {
+      "put": {
+        "tags": [
+          "Regex"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "string"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/test/protected": {
       "get": {
         "tags": [
@@ -207,6 +249,10 @@
             "nullable": true
           },
           "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "savedExplanation": {
             "type": "string",
             "nullable": true
           },

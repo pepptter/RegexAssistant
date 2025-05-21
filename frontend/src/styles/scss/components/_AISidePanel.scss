@@ -59,4 +59,24 @@
       }
     }
   }
+  .btn-save-explanation,
+  .btn-delete-explanation {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-save-explanation:hover {
+    background-color: #2ecc71;
+  }
+
+  .btn-delete-explanation:hover {
+    background-color: #e74c3c;
+  }
+
+
 }

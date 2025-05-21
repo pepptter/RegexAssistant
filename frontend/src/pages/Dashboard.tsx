@@ -12,7 +12,7 @@ import logolarge from "../assets/logotype-large.png";
 const Dashboard = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("dashboard");
+const [activeTab, setActiveTab] = useState("common");
 
   useEffect(() => {
     if (!token) navigate("/login");
@@ -39,10 +39,10 @@ const Dashboard = () => {
     <div className="dashboard-layout">
       <aside className="dashboard-menu">
         <button
-          className={activeTab === "dashboard" ? "active" : ""}
-          onClick={() => setActiveTab("dashboard")}
+          className={activeTab === "common" ? "active" : ""}
+          onClick={() => setActiveTab("common")}
         >
-          Dashboard
+          Common regexes
         </button>
         <button
           className={activeTab === "save" ? "active" : ""}
@@ -57,12 +57,6 @@ const Dashboard = () => {
           AI Generator
         </button>
         <button
-          className={activeTab === "common" ? "active" : ""}
-          onClick={() => setActiveTab("common")}
-        >
-          Common Regex
-        </button>
-        <button
           className={activeTab === "user" ? "active" : ""}
           onClick={() => setActiveTab("user")}
         >
@@ -71,7 +65,7 @@ const Dashboard = () => {
       </aside>
 
       <main className="dashboard container py-4">
-        {activeTab === "dashboard" && (
+        {activeTab === "common" && (
           <div className="dashboard-header">
             <img src={logolarge} alt="Logo" />
             <div>
@@ -82,6 +76,7 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+
 
         <div className="dashboard-content">{renderActiveComponent()}</div>
       </main>

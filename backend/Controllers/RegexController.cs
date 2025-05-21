@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -24,7 +25,7 @@ namespace backend.Controllers
         [Authorize]
         public async Task<IActionResult> Get()
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var patterns = await _context.RegexPatterns
                 .Where(r => r.UserId == userId || r.UserId == null)
@@ -40,7 +41,7 @@ namespace backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
 
             pattern.UserId = userId;
@@ -55,7 +56,7 @@ namespace backend.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var pattern = await _context.RegexPatterns.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
 
             if (pattern == null) return NotFound();

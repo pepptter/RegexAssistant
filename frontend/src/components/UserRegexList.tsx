@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getAIExplanation } from "./utils/AI";
 import AISidePanel from "./AISidePanel";
-import { useAIExplain } from "./utils/useAIExplain";
 
 interface RegexPattern {
   id: number;

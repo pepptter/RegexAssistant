@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getAIExplanation } from "./utils/AI";
 import { formatExplanation } from "./utils/AI";
-import { useAIExplain } from "./utils/useAIExplain";
 
 interface RegexPattern {
   id: number;
@@ -112,7 +111,7 @@ const handleSave = async (pattern: RegexPattern) => {
                         <button className="btn btn-gray" onClick={() => handleSave(p)}>
                           Save
                         </button>
-                        <button className="btn btn-gray" onClick={() => explain(p)}>
+                      <button className="btn btn-gray" onClick={() => handleExplain(p)}>
                           Explain with AI
                         </button>
 

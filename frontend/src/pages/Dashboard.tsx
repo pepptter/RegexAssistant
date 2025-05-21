@@ -42,25 +42,25 @@ const [activeTab, setActiveTab] = useState("common");
           className={activeTab === "common" ? "active" : ""}
           onClick={() => setActiveTab("common")}
         >
-          Common regexes
+          Commonly Used regexes
         </button>
         <button
           className={activeTab === "save" ? "active" : ""}
           onClick={() => setActiveTab("save")}
         >
-          Save Regex
+          Create Your Own Regex
         </button>
         <button
           className={activeTab === "ai" ? "active" : ""}
           onClick={() => setActiveTab("ai")}
         >
-          AI Generator
+          Ask AI
         </button>
         <button
           className={activeTab === "user" ? "active" : ""}
           onClick={() => setActiveTab("user")}
         >
-          My Regexes
+          My Saved Regexes
         </button>
       </aside>
 
